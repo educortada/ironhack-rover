@@ -178,4 +178,4 @@ function pushCoordinatesToTravelLog(rover){
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
 
-moveRover('ffffbbrfffffffffrfffffffbbbbff');
+moveRover('rffrfflfrffbb');
