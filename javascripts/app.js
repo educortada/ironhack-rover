@@ -1,3 +1,24 @@
+var grid = [
+  [null, null, null, 'O', null, null, null, null, null, 'O'],
+  [null, 'O', null, null, 'O', null, null, null, null, null],
+  [null, null, null, null, null, null, 'O', null, 'O', null],
+  [null, null, 'O', null, null, null, null, 'O', null, null],
+  [null, null, null, 'O', null, null, null, null, null, 'O'],
+  ['O', null, null, null, null, null, 'O', null, null, null],
+  [null, 'O', null, null, 'O', null, null, null, null, null],
+  [null, null, null, null, null, 'O', null, null, null, 'O'],
+  [null, null, 'O', 'O', null, null, null, null, null, null],
+  [null, null, null, 'O', null, null, 'O', null, null, null]
+];
+for (var i = 0; i < grid.length; i++){
+  var row = grid[i];
+  for (var j = 0; j < row.length; j++){
+    var column = row[j];
+    if (column === 'O'){
+      console.log('Obstacle: ' + i + ',' + j);
+    }
+  }
+}
 // Rover Object Goes Here
 var rover = {
   direction: 'N',
