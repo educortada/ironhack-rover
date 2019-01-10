@@ -1,3 +1,11 @@
+// Rover Object
+var rover = {
+  direction: 'N',
+  x: 0,
+  y: 0,
+  travelLog: []
+}
+// Grid
 var grid = [
   [null, null, null, 'O', null, null, null, null, null, 'O'],
   [null, 'O', null, null, 'O', null, null, null, null, null],
@@ -10,22 +18,8 @@ var grid = [
   [null, null, 'O', 'O', null, null, null, null, null, null],
   [null, null, null, 'O', null, null, 'O', null, null, null]
 ];
-for (var i = 0; i < grid.length; i++){
-  var row = grid[i];
-  for (var j = 0; j < row.length; j++){
-    var column = row[j];
-    if (column === 'O'){
-      console.log('Obstacle: ' + i + ',' + j);
-    }
-  }
-}
-// Rover Object Goes Here
-var rover = {
-  direction: 'N',
-  x: 0,
-  y: 0,
-  travelLog: [0, 0]
-}
+
+// Default data
 console.log('Default direction: ' + rover.direction);
 console.log('Default position: (' + rover.x + ',' + rover.y + ')');
 console.log('-----');
@@ -78,91 +72,75 @@ function turnRight(rover){
 
 function moveForward(rover){
   console.log("moveForward was called")
-  
+  var hasMoved = false;
   switch (rover.direction){
     case 'N':
+      var nextPositionX = rover.x;
       var nextPositionY = rover.y - 1;
-      if (nextPositionY >= 0 && nextPositionY < 10){
-        rover.y -= 1;
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.');
-      }
       break;
     case 'S':
+      var nextPositionX = rover.x;
       var nextPositionY = rover.y + 1;
-      if (nextPositionY >= 0 && nextPositionY < 10){
-        rover.y += 1;   
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.');
-      }
       break;
     case 'E':
       var nextPositionX = rover.x + 1;
-      if (nextPositionX >= 0 && nextPositionX < 10){
-        rover.x += 1;
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.');
-      }
+      var nextPositionY = rover.y;
       break;
     case 'W':
       var nextPositionX = rover.x - 1;
-      if (nextPositionX >= 0 && nextPositionX < 10){
-        rover.x -= 1;   
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.'); 
-      }
+      var nextPositionY = rover.y;
       break;
   }
+  hasMoved = checkNextMovent(nextPositionX, nextPositionY);
+  console.log(hasMoved);
+  return hasMoved;
 }
 
 function moveBackward(rover){
   console.log('moveBackward was called');
+  var hasMoved = false;
   switch (rover.direction){
     case 'N':
+      var nextPositionX = rover.x;
       var nextPositionY = rover.y + 1;
-      if (nextPositionY >= 0 && nextPositionY < 10){
-        rover.y += 1;
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.'); 
-      }
       break;
     case 'S':
+      var nextPositionX = rover.x;
       var nextPositionY = rover.y - 1;
-      if (nextPositionY >= 0 && nextPositionY < 10){
-        rover.y -= 1;   
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.'); 
-      }
       break;
     case 'E':
       var nextPositionX = rover.x - 1;
-      if (nextPositionX >= 0 && nextPositionX < 10){
-        rover.x -= 1;
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.'); 
-      }
+      var nextPositionY = rover.y;
       break;
     case 'W':
       var nextPositionX = rover.x + 1;
-      if (nextPositionX >= 0 && nextPositionX < 10){
-        rover.x += 1;   
-        pushCoordinatesToTravelLog(rover);
-      } else {
-        console.log ('Error! rover is going off the grid.'); 
-      }
+      var nextPositionY = rover.y;
       break;
   }
+  hasMoved = checkNextMovent(nextPositionX, nextPositionY);
+  console.log(hasMoved);
+  return hasMoved;
+}
+
+// Check if the next movement is going inside the grid
+function checkNextMovent(nextPositionX, nextPositionY){
+  var hasMoved = false;
+  if ((nextPositionX >= 0 && nextPositionX < 10) && (nextPositionY >= 0 && nextPositionY < 10)){
+    rover.x = nextPositionX;
+    rover.y = nextPositionY;
+    pushCoordinatesToTravelLog(rover);
+    hasMoved = true;
+  } else {
+    console.log ('Error! rover is going off the grid.'); 
+  }
+  return hasMoved;
 }
 
 // Move rover with the received list of commands.
-function moveRover(commands){
+function startMovement(commands){
+  if (rover.travelLog.length === 0){
+    rover.travelLog.push(rover.x, rover.y);
+  }
   for (var i = 0; i < commands.length; i++){
     if (commands[i] === 'r'){
       turnRight(rover);
@@ -174,7 +152,6 @@ function moveRover(commands){
       moveBackward(rover);
     } else{
       console.log('Command ' + commands[i] +  ' isn’t a rover command.');
-      break;
     }
   }
   printTravelLog(rover);
@@ -194,9 +171,10 @@ function printTravelLog(rover){
   console.log('Tracking: ' + coordinates);  
 }
 
+// Store the tracking
 function pushCoordinatesToTravelLog(rover){
   rover.travelLog.push(rover.x, rover.y);
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
 
-moveRover('rffrfflfrffbb');
+startMovement('rfffbbbb');
