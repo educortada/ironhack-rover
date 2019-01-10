@@ -176,7 +176,7 @@ function printTravelLog(rover){
   console.log('Tracking: ' + coordinates);  
 }
 
-// Store the tracking
+// Store tracking
 function pushCoordinatesToTravelLog(rover){
   rover.travelLog.push(rover.x, rover.y);
   console.log('(' + rover.x + ',' + rover.y + ')');
