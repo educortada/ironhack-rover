@@ -7,16 +7,16 @@ var rover = {
 }
 // Grid
 var grid = [
-  [null, null, null, 'O', null, null, null, null, null, 'O'],
-  [null, 'O', null, null, 'O', null, null, null, null, null],
-  [null, null, null, null, null, null, 'O', null, 'O', null],
-  [null, null, 'O', null, null, null, null, 'O', null, null],
-  [null, null, null, 'O', null, null, null, null, null, 'O'],
-  ['O', null, null, null, null, null, 'O', null, null, null],
-  [null, 'O', null, null, 'O', null, null, null, null, null],
-  [null, null, null, null, null, 'O', null, null, null, 'O'],
-  [null, null, 'O', 'O', null, null, null, null, null, null],
-  [null, null, null, 'O', null, null, 'O', null, null, null]
+  [null, 'stone', null, null, null, null, null, null, null, 'stone'],
+  [null, null, 'stone', null, 'stone', null, null, null, null, null],
+  [null, null, null, null, null, null, 'stone', null, 'stone', null],
+  [null, null, 'stone', null, null, null, null, 'stone', null, null],
+  [null, null, null, 'stone', null, null, null, null, null, 'stone'],
+  ['stone', null, null, null, null, null, 'stone', null, null, null],
+  [null, 'stone', null, null, 'stone', null, null, null, null, null],
+  [null, null, null, null, null, 'stone', null, null, null, 'stone'],
+  [null, null, 'stone', 'stone', null, null, null, null, null, null],
+  [null, null, null, 'stone', null, null, 'stone', null, null, null]
 ];
 
 // Default data
@@ -92,7 +92,6 @@ function moveForward(rover){
       break;
   }
   hasMoved = checkNextMovent(nextPositionX, nextPositionY);
-  console.log(hasMoved);
   return hasMoved;
 }
 
@@ -118,18 +117,24 @@ function moveBackward(rover){
       break;
   }
   hasMoved = checkNextMovent(nextPositionX, nextPositionY);
-  console.log(hasMoved);
   return hasMoved;
 }
 
-// Check if the next movement is going inside the grid
+// Check if the next movement is going inside the grid and there isn't an obstacle
 function checkNextMovent(nextPositionX, nextPositionY){
   var hasMoved = false;
+  var row = nextPositionY;
+  var column = nextPositionX;
+
   if ((nextPositionX >= 0 && nextPositionX < 10) && (nextPositionY >= 0 && nextPositionY < 10)){
-    rover.x = nextPositionX;
-    rover.y = nextPositionY;
-    pushCoordinatesToTravelLog(rover);
-    hasMoved = true;
+    if (grid[row][column] === null){
+      rover.x = nextPositionX;
+      rover.y = nextPositionY;    
+      pushCoordinatesToTravelLog(rover);
+      hasMoved = true;
+    } else if (grid[row][column] === 'stone') {
+      console.log('Found a ' + grid[row][column] + '!');
+    }
   } else {
     console.log ('Error! rover is going off the grid.'); 
   }
@@ -177,4 +182,4 @@ function pushCoordinatesToTravelLog(rover){
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
 
-startMovement('rfffbbbb');
+startMovement('llflffrrbff');
