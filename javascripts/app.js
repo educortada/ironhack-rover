@@ -3,11 +3,12 @@ var rover = {
   direction: 'N',
   x: 0,
   y: 0,
-  travelLog: []
+  travelLog: [],
+  turn: true
 }
 // Grid
 var grid = [
-  [null, 'stone', null, null, null, null, null, null, null, 'stone'],
+  [null, null, null, null, null, null, null, 'stone', null, 'stone'],
   [null, null, 'stone', null, 'stone', null, null, null, null, null],
   [null, null, null, null, null, null, 'stone', null, 'stone', null],
   [null, null, 'stone', null, null, null, null, 'stone', null, null],
@@ -91,7 +92,7 @@ function moveForward(rover){
       var nextPositionY = rover.y;
       break;
   }
-  hasMoved = checkNextMovent(nextPositionX, nextPositionY);
+  hasMoved = checkNextMovement(nextPositionX, nextPositionY);
   return hasMoved;
 }
 
@@ -116,24 +117,21 @@ function moveBackward(rover){
       var nextPositionY = rover.y;
       break;
   }
-  hasMoved = checkNextMovent(nextPositionX, nextPositionY);
+  hasMoved = checkNextMovement(nextPositionX, nextPositionY);
   return hasMoved;
 }
 
 // Check if the next movement is going inside the grid and there isn't an obstacle
-function checkNextMovent(nextPositionX, nextPositionY){
+function checkNextMovement(nextPositionX, nextPositionY){
   var hasMoved = false;
-  var row = nextPositionY;
-  var column = nextPositionX;
-
   if ((nextPositionX >= 0 && nextPositionX < 10) && (nextPositionY >= 0 && nextPositionY < 10)){
-    if (grid[row][column] === null){
+    if (grid[nextPositionY][nextPositionX] === null){
       rover.x = nextPositionX;
       rover.y = nextPositionY;    
       pushCoordinatesToTravelLog(rover);
       hasMoved = true;
-    } else if (grid[row][column] === 'stone') {
-      console.log('Found a ' + grid[row][column] + '!');
+    } else if (grid[nextPositionY][nextPositionX] === 'stone') {
+      console.log('Found a ' + grid[nextPositionY][nextPositionX] + '!');
     }
   } else {
     console.log ('Error! rover is going off the grid.'); 
@@ -181,5 +179,5 @@ function pushCoordinatesToTravelLog(rover){
   rover.travelLog.push(rover.x, rover.y);
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
-
+//console.log(grid);
 startMovement('llflffrrbff');
