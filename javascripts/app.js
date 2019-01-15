@@ -1,33 +1,45 @@
-// Rover Object
+// Rover Objects
 var rover = {
   direction: 'N',
   x: 0,
   y: 0,
   travelLog: [],
-  turn: true
+  name: 'Rover 1',
+  myTurn: true
 }
+var rover2 = {
+  direction: 'N',
+  x: 0,
+  y: 1,
+  travelLog: [],
+  name: 'Rover 2',
+  myTurn: false
+}
+
 // Grid
 var grid = [
-  [null, null, null, null, null, null, null, 'stone', null, 'stone'],
-  [null, null, 'stone', null, 'stone', null, null, null, null, null],
-  [null, null, null, null, null, null, 'stone', null, 'stone', null],
-  [null, null, 'stone', null, null, null, null, 'stone', null, null],
-  [null, null, null, 'stone', null, null, null, null, null, 'stone'],
-  ['stone', null, null, null, null, null, 'stone', null, null, null],
-  [null, 'stone', null, null, 'stone', null, null, null, null, null],
-  [null, null, null, null, null, 'stone', null, null, null, 'stone'],
-  [null, null, 'stone', 'stone', null, null, null, null, null, null],
-  [null, null, null, 'stone', null, null, 'stone', null, null, null]
+  [null, null, null, null, null, null, null, 'stone', null, null],
+  [null, null, null, null, 'stone', null, null, null, null, null],
+  [null, null, null, null, null, null, null, null, 'stone', null],
+  [null, null, null, null, null, null, null, 'stone', null, null],
+  [null, null, null, 'stone', null, null, null, null, null, null],
+  ['stone', null, null, null, null, null, null, null, null, null],
+  [null, null, null, null, 'stone', null, null, null, null, null],
+  [null, null, null, null, null, 'stone', null, null, null, null],
+  [null, null, 'stone', null, null, null, null, null, null, null],
+  [null, null, null, null, null, null, 'stone', null, null, null]
 ];
+// Add Rovers to the map
+grid[rover.y][rover.x] = rover.name;
+grid[rover2.y][rover2.x] = rover2.name;
 
-// Default data
-console.log('Default direction: ' + rover.direction);
-console.log('Default position: (' + rover.x + ',' + rover.y + ')');
+// Default data.
+console.log('Name: ' + rover.name + ' default direction: ' + rover.direction + ' default position: (' + rover.x + ',' + rover.y + ')');
+console.log('Name: ' + rover2.name + ' default direction: ' + rover2.direction + ' default position: (' + rover2.x + ',' + rover2.y + ')');
 console.log('-----');
 
 function turnLeft(rover){
-  console.log("turnLeft was called!");
-
+  console.log(rover.name + ' turnLeft was called!');
   switch (rover.direction){
     case 'N':
       rover.direction = 'W';
@@ -45,12 +57,11 @@ function turnLeft(rover){
       rover.direction = 'S';
       console.log('Rover is now facing South');
       break;
-  } 
+  }
 }
 
 function turnRight(rover){
-  console.log("turnRight was called!");
-  
+  console.log(rover.name + ' turnRight was called!');
   switch (rover.direction){
     case 'N':
       rover.direction = 'E';
@@ -72,8 +83,7 @@ function turnRight(rover){
 }
 
 function moveForward(rover){
-  console.log("moveForward was called")
-  var hasMoved = false;
+  console.log(rover.name + ' moveForward was called!');
   switch (rover.direction){
     case 'N':
       var nextPositionX = rover.x;
@@ -92,13 +102,11 @@ function moveForward(rover){
       var nextPositionY = rover.y;
       break;
   }
-  hasMoved = checkNextMovement(nextPositionX, nextPositionY);
-  return hasMoved;
+  checkNextMovement(nextPositionX, nextPositionY, rover);
 }
 
 function moveBackward(rover){
-  console.log('moveBackward was called');
-  var hasMoved = false;
+  console.log(rover.name + ' moveBackward was called!');
   switch (rover.direction){
     case 'N':
       var nextPositionX = rover.x;
@@ -117,61 +125,41 @@ function moveBackward(rover){
       var nextPositionY = rover.y;
       break;
   }
-  hasMoved = checkNextMovement(nextPositionX, nextPositionY);
-  return hasMoved;
+  checkNextMovement(nextPositionX, nextPositionY, rover);
 }
 
 // Check if the next movement is going inside the grid and there isn't an obstacle
-function checkNextMovement(nextPositionX, nextPositionY){
-  var hasMoved = false;
+function checkNextMovement(nextPositionX, nextPositionY, rover){
   if ((nextPositionX >= 0 && nextPositionX < 10) && (nextPositionY >= 0 && nextPositionY < 10)){
     if (grid[nextPositionY][nextPositionX] === null){
+      // Set null to rover's previous position
+      grid[rover.y][rover.x] = null;
+      // Set rover to the next position
+      grid[nextPositionY][nextPositionX] = rover.name;
       rover.x = nextPositionX;
       rover.y = nextPositionY;    
       pushCoordinatesToTravelLog(rover);
-      hasMoved = true;
     } else if (grid[nextPositionY][nextPositionX] === 'stone') {
       console.log('Found a ' + grid[nextPositionY][nextPositionX] + '!');
+    } else if (grid[nextPositionY][nextPositionX] === 'Rover 1' || grid[nextPositionY][nextPositionX] === 'Rover 2'){
+      console.log('Found ' + grid[nextPositionY][nextPositionX] + '!');
     }
   } else {
-    console.log ('Error! rover is going off the grid.'); 
+    console.log ('Error! ' + rover.name + ' is going off the grid.'); 
   }
-  return hasMoved;
 }
 
-// Move rover with the received list of commands.
-function startMovement(commands){
-  if (rover.travelLog.length === 0){
-    rover.travelLog.push(rover.x, rover.y);
-  }
-  for (var i = 0; i < commands.length; i++){
-    if (commands[i] === 'r'){
-      turnRight(rover);
-    } else if (commands[i] === 'l'){
-      turnLeft(rover);
-    } else if (commands[i] === 'f'){
-      moveForward(rover);
-    } else if (commands[i] === 'b'){
-      moveBackward(rover);
-    } else{
-      console.log('Command ' + commands[i] +  ' isn’t a rover command.');
-    }
-  }
-  printTravelLog(rover);
-}
-
-// Print all coordinates where rover has traveled over.
+// Print all coordinates where rover has traveled over
 function printTravelLog(rover){
   var coordinates = '';
   rover.travelLog.forEach(function(item, index){
     if (index % 2 === 0){
       coordinates += '(' + item + ',';
-    }
-    else if (index % 2 !== 0){
+    } else if (index % 2 !== 0){
       coordinates += item + ') ';
     }
   });
-  console.log('Tracking: ' + coordinates);  
+  console.log(rover.name + ' tracking: ' + coordinates);  
 }
 
 // Store tracking
@@ -179,5 +167,59 @@ function pushCoordinatesToTravelLog(rover){
   rover.travelLog.push(rover.x, rover.y);
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
-//console.log(grid);
-startMovement('llflffrrbff');
+
+var rovers = [rover, rover2];
+
+// Check which rover have the next turn
+function checkMyTurn(){
+  var myTurn;
+  for (var rover in rovers){
+    if (rovers[rover].myTurn){
+      myTurn = rovers[rover];
+    }
+  }
+  return myTurn;
+}
+
+ // It take turns between two rovers
+function takeTurns(rover){
+  rover.myTurn = false;
+  if (rovers.indexOf(rover) === 0){
+    rovers[1].myTurn = true;
+  } else if (rovers.indexOf(rover) === 1){
+    rovers[0].myTurn = true;
+  } else {
+    console.log('Error!');
+  }
+}
+
+// Move rover with the received list of commands
+function startMovement(commands){
+  var currentRover;
+  for (var i = 0; i < commands.length; i++){
+    currentRover = checkMyTurn();
+    if (currentRover.travelLog.length === 0){
+      currentRover.travelLog.push(currentRover.x, currentRover.y);
+    }
+    switch(commands[i]){
+      case 'r':
+        turnRight(currentRover);
+        break;
+      case 'l':
+        turnLeft(currentRover);
+        break;
+      case 'f':
+        moveForward(currentRover);
+        break;
+      case 'b':
+        moveBackward(currentRover);
+        break;
+      default:
+        console.log('Command ' + commands[i] +  ' isn’t a rover command.');
+    }
+    takeTurns(currentRover);
+    printTravelLog(currentRover);
+  }
+}
+
+//startMovement('rrfffrff');
