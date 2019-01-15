@@ -184,9 +184,9 @@ function checkMyTurn(){
  // It take turns between two rovers
 function takeTurns(rover){
   rover.myTurn = false;
-  if (rovers.indexOf(rover) === 0){
+  if (rover.name === 'Rover 1'){
     rovers[1].myTurn = true;
-  } else if (rovers.indexOf(rover) === 1){
+  } else if (rover.name === 'Rover 2'){
     rovers[0].myTurn = true;
   } else {
     console.log('Error!');
@@ -215,7 +215,7 @@ function startMovement(commands){
         moveBackward(currentRover);
         break;
       default:
-        console.log('Command ' + commands[i] +  ' isn’t a rover command.');
+        console.log('Command \"' + commands[i] +  '\" isn’t a rover command.');
     }
     takeTurns(currentRover);
     printTravelLog(currentRover);
