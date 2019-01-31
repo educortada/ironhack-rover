@@ -16,6 +16,8 @@ var rover2 = {
   myTurn: false
 }
 
+var rovers = [rover, rover2];
+
 // Grid
 var grid = [
   [null, null, null, null, null, null, null, 'stone', null, null],
@@ -168,17 +170,15 @@ function pushCoordinatesToTravelLog(rover){
   console.log('(' + rover.x + ',' + rover.y + ')');
 }
 
-var rovers = [rover, rover2];
-
 // Check which rover have the next turn
-function checkMyTurn(){
-  var myTurn;
+function checkRoverNextTurn(){
+  var roverNextTurn;
   for (var rover in rovers){
     if (rovers[rover].myTurn){
-      myTurn = rovers[rover];
+      roverNextTurn = rovers[rover];
     }
   }
-  return myTurn;
+  return roverNextTurn;
 }
 
  // It take turns between two rovers
@@ -197,7 +197,7 @@ function takeTurns(rover){
 function startMovement(commands){
   var currentRover;
   for (var i = 0; i < commands.length; i++){
-    currentRover = checkMyTurn();
+    currentRover = checkRoverNextTurn();
     if (currentRover.travelLog.length === 0){
       currentRover.travelLog.push(currentRover.x, currentRover.y);
     }
